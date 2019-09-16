@@ -1,0 +1,536 @@
+﻿@*@{
+    Layout = null;
+}*@
+<!doctype html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>ElementUI</title>
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <style type="text/css">
+        .transition-box {
+            margin-bottom: 10px;
+            width: 200px;
+            height: 100px;
+            border-radius: 4px;
+            background-color: #409EFF;
+            text-align: center;
+            color: #fff;
+            padding: 40px 20px;
+            box-sizing: border-box;
+            margin-right: 20px;
+          }
+        
+        .grid-content {
+            border-radius: 4px;
+            min-height: 36px;
+          }
+        .bg-purple {
+            background: #d3dce6;
+        }
+        .bg-purple-light {
+            background: #e5e9f2;
+          }
+
+        .el-header, .el-footer {
+            background-color: #B3C0D1;
+            color: #333;
+            text-align: center;
+            line-height: 60px;
+          }
+
+        .el-aside {
+            background-color: #D3DCE6;
+            color: #333;
+            text-align: center;
+            line-height: 200px;
+          }
+  
+          .el-main {
+            background-color: #E9EEF3;
+            color: #333;
+            text-align: center;
+            line-height: 160px;
+          }
+
+          body > .el-container {
+            margin-bottom: 40px;
+          }
+
+          /*.el-select .el-input {
+            width: 130px;
+          }*/
+          .input-with-select .el-input-group__prepend {
+            background-color: #fff;
+          }
+
+   
+
+    </style>
+</head>
+<body>
+    <div id="app">
+        <hr />
+        <div>
+            <h3>对话框</h3>
+            <div>
+                <el-button type="primary" v-on:click="openDlg">打开对话框</el-button>
+            </div>
+            <div>
+                <el-dialog title="提示"
+                           v-bind:visible.sync="dialogVisible"
+                           width="60%" >
+                    <template>
+                        <el-form ref="form" v-bind:model="form"  size="mini"  >
+                            
+                            <el-row v-bind:style="{'height':sRowHeight, 'marginBottom':sRowMargin }">
+                                <el-col v-bind:span="12" v-bind:style="{'height':sRowHeight, 'margin-bottom':sRowMargin }">
+                                    <el-form-item label="活动名称" v-bind:label-width="formLabelWidth">
+                                        <el-input v-model='form["name"]' v-bind:style="{ width:formInput+'%'}"></el-input>
+                                    </el-form-item>
+                                </el-col>
+                                <el-col v-bind:span="12" v-bind:style="{'height':sRowHeight, 'margin-bottom':sRowMargin }">
+                                    <el-form-item label="活动区域" v-bind:label-width="formLabelWidth">
+                                        <el-select v-model='form["region"]' placeholder="请选择活动区域" v-bind:style="{ width:formInput+'%'}">
+                                            <el-option label="区域一" value="shanghai"></el-option>
+                                            <el-option label="区域二" value="beijing"></el-option>
+                                        </el-select>
+                                    </el-form-item>
+                                </el-col>
+                            </el-row>
+                            
+                            <el-row v-bind:style="{'height':sRowHeight, 'margin-bottom':sRowMargin }">
+                                <el-col v-bind:span="12" v-bind:style="{'height':sRowHeight, 'margin-bottom':sRowMargin }">
+                                    <el-form-item label="活动时间" v-bind:label-width="formLabelWidth">
+                                        <el-date-picker type="date" placeholder="选择日期" v-model="form.date1" style="width:80%;"></el-date-picker>
+                                    </el-form-item>
+                                </el-col>
+                                <el-col v-bind:span="12" v-bind:style="{'height':sRowHeight, 'margin-bottom':sRowMargin }">
+                                    <el-form-item label="活动时间" v-bind:label-width="formLabelWidth">
+                                        <el-time-picker placeholder="选择时间" v-model="form.date2" style="width:80%;"></el-time-picker>
+                                    </el-form-item>
+                                </el-col>
+                            </el-row>
+                            <el-row v-bind:style="{'height':sRowHeight, 'margin-bottom':sRowMargin }">
+                                <el-col v-bind:span="12" v-bind:style="{'height':sRowHeight, 'margin-bottom':sRowMargin }">
+
+                                </el-col>
+                                <el-col v-bind:span="12" v-bind:style="{'height':sRowHeight, 'margin-bottom':sRowMargin }">
+                                    <el-form-item label="即时配送" v-bind:label-width="formLabelWidth">
+                                        <el-switch v-model="form.delivery" style="width:80%;"></el-switch>
+                                    </el-form-item>
+                                </el-col>
+                            </el-row>
+                        </el-form>
+                    </template>
+                    <span slot="footer" class="dialog-footer">
+                        <el-button v-on:click="dialogVisible = false">取 消</el-button>
+                        <el-button type="primary" v-on:click="dialogSure">确 定</el-button>
+                    </span>
+                </el-dialog>
+
+            </div>
+        </div>
+        <hr />
+        <div>
+            <h3>模态框组件</h3>
+            <div>
+                <el-button type="primary" v-on:click="openDlg2">打开模态框组件</el-button>
+            </div>
+            <el-dialog title="模态框组件" v-bind:visible.sync="dialogVisible2" width="60%">
+                <template>
+                    <el-form v-bind:model="innerForm" size="mini">
+                        <el-row v-for="n in rowsCount" v-bind:key="n"  v-bind:style="{'height':sRowHeight, 'margin-bottom':sRowMargin }">
+                            <el-col v-bind:span="12" v-bind:style="{'height':sRowHeight, 'marginBottom':sRowMargin }">
+                                <el-form-item v-bind:label="form2[n*2-2].label" v-bind:label-width="formLabelWidth">
+                                    <template v-if="form2[n*2-2].type=='2'">
+                                        <el-select v-model='innerForm[ form2[n*2-2].name ]' v-bind:placeholder="form2[n*2-2].placeHolder" v-bind:style="{ width:formInput+'%'}">
+                                            <el-option v-for="item in form2[n*2-2].options" v-bind:key="item.value" v-bind:label="item.label" v-bind:value="item.value"></el-option>
+                                        </el-select>
+                                    </template>
+                                    <template v-else-if="form2[n*2-2].type=='3'">
+                                        <el-date-picker type="date" v-bind:placeholder="form2[n*2-2].placeHolder" v-model='innerForm[ form2[n*2-2].name ]' v-bind:style="{ width:formInput+'%'}"></el-date-picker>
+                                    </template>
+                                    <template v-else-if="form2[n*2-2].type=='4'">
+                                        <el-time-picker v-bind:placeholder="form2[n*2-2].placeHolder" v-model='innerForm[ form2[n*2-2].name ]' v-bind:style="{ width:formInput+'%'}"></el-time-picker>
+                                    </template>
+                                    <template v-else>
+                                        <el-input v-model='innerForm[ form2[n*2-2].name ]' v-bind:style="{ width:formInput+'%'}"></el-input>
+                                    </template>
+
+                                </el-form-item>
+
+                            </el-col>
+
+                            <el-col v-if="form2.length >= n*2 " v-bind:span="12" v-bind:style="{'height':sRowHeight, 'margin-bottom':sRowMargin }">
+                                <el-form-item v-bind:label="form2[n*2-1].label" v-bind:label-width="formLabelWidth">
+                                    <template v-if="form2[n*2-1].type=='2'">
+                                        <el-select v-model='innerForm[ form2[n*2-1].name ]' v-bind:placeholder="form2[n*2-1].placeHolder" v-bind:style="{ width:formInput+'%'}">
+                                            <el-option v-for="item in form2[n*2-1].options" v-bind:key="item.value" v-bind:label="item.label" v-bind:value="item.value"></el-option>
+                                        </el-select>
+                                    </template>
+                                    <template v-else-if="form2[n*2-1].type=='3'">
+                                        <el-date-picker type="date" v-bind:placeholder="form2[n*2-1].placeHolder" v-model='innerForm[ form2[n*2-1].name ]' v-bind:style="{ width:formInput+'%'}"></el-date-picker>
+                                    </template>
+                                    <template v-else-if="form2[n*2-1].type=='4'">
+                                        <el-time-picker v-bind:placeholder="form2[n*2-1].placeHolder" v-model='innerForm[ form2[n*2-1].name ]' v-bind:style="{ width:formInput+'%'}"></el-time-picker>
+                                    </template>
+                                    <template v-else>
+                                        <el-input v-model='innerForm[ form2[n*2-1].name ]' v-bind:style="{ width:formInput+'%'}"></el-input>
+                                    </template>
+                                </el-form-item>
+                            </el-col>
+                        </el-row>
+                    </el-form>
+                    
+
+                </template>
+                <span slot="footer" class="dialog-footer">
+                    <el-button v-on:click="dialogVisible2 = false">取 消</el-button>
+                    <el-button type="primary" v-on:click="dialogSure2">确 定</el-button>
+                </span>
+            </el-dialog>
+        </div>
+        <hr />
+        <el-button v-on:click="visible = true" class="el-icon-edit">Button</el-button>
+        <el-dialog v-bind:visible.sync="visible" title="Hello World">
+            <p>Try Element</p>
+        </el-dialog>
+        <hr />
+        <div>
+            <h3>Fade淡入淡出</h3>
+            <div>
+                <el-button v-on:click="showFade = !showFade" class="el-icon-warning">Click Me</el-button>
+                <div style="display:flex; margin-top:20px; height:100px;">
+                    <transition name="el-fade-in-linear">
+                        <div v-show="showFade" class="transition-box">.el-fade-in-liner</div>
+                    </transition>
+                    <transition name="el-fade-in">
+                        <div v-show="showFade" class="transition-box">.el-fade-in</div>
+                    </transition>
+                </div>
+            </div>
+        </div>
+        <hr />
+        <div>
+            <h3>zoom缩放</h3>
+            <div>
+                <el-button v-on:click="showFade2 = !showFade2">Click Me</el-button>
+                <div style="display:flex; margin-top:20px; height:100px;">
+                    <transition name="el-zoom-in-center">
+                        <div v-show="showFade2" class="transition-box">.el-zoom-in-center</div>
+                    </transition>
+                    <transition name="el-zoom-in-top">
+                        <div v-show="showFade2" class="transition-box">.el-zoom-in-top</div>
+                    </transition>
+                    <transition name="el-zoom-in-bottom">
+                        <div v-show="showFade2" class="transition-box">.el-zoom-in-bottom</div>
+                    </transition>
+                </div>
+            </div>
+        </div>
+        <hr />
+        <div>
+            <h3>collapse展开折叠</h3>
+            <div>
+                <el-button v-on:click="showFade3 = !showFade3">Click Me</el-button>
+                <div style="display:flex; margin-top:20px; height:100px;">
+                    <el-collapse-transition>
+                        <div v-show="showFade3" class="transition-box">
+                            el-collspse-transition
+                        </div>
+                    </el-collapse-transition>
+                </div>
+            </div>
+        </div>
+        <hr />
+        <div>
+            <h3>基础布局</h3>
+            <div>
+                <el-row v-bind:span="24">
+                    <div class="grid-content bg-purple"></div>
+                </el-row>
+                <el-row>
+                    <el-col :span="12"><div class="grid-content bg-purple"></div></el-col>
+                    <el-col :span="12"><div class="grid-content bg-purple-light"></div></el-col>
+                </el-row>
+                <el-row :gutter="20">
+                    <el-col :span="6"><div class="grid-content bg-purple"></div></el-col>
+                    <el-col :span="6"><div class="grid-content bg-purple"></div></el-col>
+                    <el-col :span="6"><div class="grid-content bg-purple"></div></el-col>
+                    <el-col :span="6"><div class="grid-content bg-purple"></div></el-col>
+                </el-row>
+                <el-row :gutter="20">
+                    <el-col :span="16"><div class="grid-content bg-purple"></div></el-col>
+                    <el-col :span="8"><div class="grid-content bg-purple"></div></el-col>
+                </el-row>
+                <el-row v-bind:gutter="20">
+                    <el-col v-bind:span="6"><div class="grid-content bg-purple"></div></el-col>
+                    <el-col v-bind:span="6" v-bind:offset="6"><div class="grid-content bg-purple"></div></el-col>
+                </el-row>
+            </div>
+        </div>
+        <div>
+            <h3>
+                页面布局
+            </h3>
+            <div>
+                <el-container >
+                    <el-aside width="200px">Aside</el-aside>
+                    <el-container>
+                        <el-header>Header</el-header>
+                        <el-main>Main</el-main>
+                        <el-footer>Footer</el-footer>
+                    </el-container>
+                </el-container>
+            </div>
+
+            <div style="margin-top:20px;">
+                <el-container>
+                    <el-header>Header</el-header>
+                    <el-container>
+                        <el-aside width="200px">Aside</el-aside>
+                        <el-main>Main</el-main>
+                    </el-container>
+                    <el-footer>Footer</el-footer>
+                </el-container>
+            </div>
+        </div>
+        <hr />
+        <div>
+            <h3>Button按钮</h3>
+            <div>
+                <el-row>
+                    <el-button>默认按钮</el-button>
+                    <el-button type="primary">主要按钮</el-button>
+                    <el-button type="success">成功按钮</el-button>
+                    <el-button type="info">信息按钮</el-button>
+                    <el-button type="warning">警告按钮</el-button>
+                    <el-button type="danger">危险按钮</el-button>
+                </el-row>
+
+                <el-row>
+                    <el-button plain>朴素按钮</el-button>
+                    <el-button type="primary" plain>主要按钮</el-button>
+                    <el-button type="success" plain>成功按钮</el-button>
+                    <el-button type="info" plain>信息按钮</el-button>
+                    <el-button type="warning" plain>警告按钮</el-button>
+                    <el-button type="danger" plain>危险按钮</el-button>
+                </el-row>
+
+                <el-row>
+                    <el-button round>圆角按钮</el-button>
+                    <el-button type="primary" round>主要按钮</el-button>
+                    <el-button type="success" round>成功按钮</el-button>
+                    <el-button type="info" round>信息按钮</el-button>
+                    <el-button type="warning" round>警告按钮</el-button>
+                    <el-button type="danger" round>危险按钮</el-button>
+                </el-row>
+
+                <el-row>
+                    <el-button icon="el-icon-search" circle></el-button>
+                    <el-button type="primary" icon="el-icon-edit" circle></el-button>
+                    <el-button type="success" icon="el-icon-check" circle></el-button>
+                    <el-button type="info" icon="el-icon-message" circle></el-button>
+                    <el-button type="warning" icon="el-icon-star-off" circle></el-button>
+                    <el-button type="danger" icon="el-icon-delete" circle></el-button>
+                </el-row>
+            </div>
+        </div>
+        <hr />
+        <div>
+            <h3>Check All</h3>
+            <div>
+                <el-checkbox v-bind:indeterminate="isIndeterminate" v-model="checkAll" v-on:change="handleCheckAllChange">全选</el-checkbox>
+                <div style="margin:15px 0;"></div>
+                <el-checkbox-group v-model="checkedCities" v-on:change="handleCheckedCitiesChange">
+                    <el-checkbox v-for="city in cities" v-bind:label="city" v-bind:key="city">{{city}}</el-checkbox>
+                </el-checkbox-group>
+            </div>
+        </div>
+        <hr />
+        <div>
+            <h3>Input输入框</h3>
+            <div>
+                <el-input placeholder="请输入内容" v-bind:disabled="true" prefix-icon="el-icon-search"></el-input>
+
+                <el-input size="mini" placeholder="请输入内容" style="margin-top:5px; width:80px;" v-model="miniInput" clearable></el-input>
+
+                <el-input type="textarea" v-bind:rows="2" placeholder="请输入内容" style="margin-top:5px;" v-model="textArea">
+
+                </el-input>
+                <div>
+                    <el-input placeholder="请输入内容" style="margin-top:5px;">
+                        <template slot="prepend">
+                            Http://
+                        </template>
+                    </el-input>
+                </div>
+                
+                
+
+            </div>
+        </div>
+        <hr />
+        <div>
+            <h3>Select选择器</h3>
+            <div>
+                <template>
+                    <el-select clearable filterable v-model="ddlVal" placeholder="请选择" >
+                        <el-option v-for="item in options" v-bind:key="item.value" v-bind:label="item.label" v-bind:value="item.value">
+
+                        </el-option>
+                    </el-select>
+                </template>
+            </div>
+        </div>
+        <hr />
+        <div>
+            <h3>DatePicker</h3>
+            <div>
+                
+                <template>
+                    <div class="block">
+                        <span class="demonstration">默认</span>
+                        <el-date-picker v-model="date1" type="date" placeholder="选择日期"></el-date-picker>
+                    </div>
+                    <div class="block">
+                        <span class="demonstration">带快捷选项</span>
+                        <el-date-picker v-model="date2" align="right" type="date" placeholder="选择日期" v-bind:picker-options="pickerOptions">
+
+                        </el-date-picker>
+                    </div>
+                </template>
+            </div>
+        </div>
+        
+    </div>
+    <script src="https://unpkg.com/vue/dist/vue.js"></script>
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+    <script>
+        const cityOptions = ['北京','上海','杭州','深圳'];
+        var app = new Vue({
+            el: '#app',
+            data: function () {
+                return {
+                    visible: false,
+                    showFade: false,
+                    showFade2: false,
+                    showFade3: false,
+                    checkAll: false,
+                    checkedCities: ['北京', '上海'],
+                    cities: cityOptions,
+                    isIndeterminate: true,
+                    miniInput: '',
+                    textArea: '',
+                    input2:'',
+                    input3: '',
+                    ddlVal:'',
+                    options: [{ value: '选项1', label: '黄金糕' }, { value: '选项2', label: '双皮奶' }],
+                    date1: '',
+                    date2: '',
+                    dialogVisible: false,
+                    dialogVisible2:false,
+                    rowHeight: 30,
+                    rowMargin: 5,
+                    formLabelWidth: '120px',
+                    formInput: 80,
+                    form: {
+                        name: '',
+                        region: '',
+                        date1: '',
+                        date2: '',
+                        delivery: false,
+                        type: [],
+                        resource: '',
+                        desc: ''
+                    },
+                    form2: [
+                        { name: 'name', label: '活动名称', type: '1', defaultValue:'xxx',placeHolder: '', options: [] },
+                        { name: 'region', label: '活动区域', type: '2', defaultValue: '', placeHolder: '请选择活动区域', options: [{ value: '北京', label: '北京' }, { value: '上海', label: '上海' }, { value: '杭州', label: '杭州' }] },
+                        { name: 'data1', label: '活动日期', type: '3', defaultValue: '2019-08-16', placeHolder: '选择日期', options: [] },
+                        { name: 'data2', label: '活动时间', type: '4', defaultValue: '', placeHolder: '选择时间', options: [] },
+                        { name: 'delivery', label: '即时配送', type: '1', defaultValue: '', placeHolder: '', options: [] },
+                    ],
+                    innerForm: {
+
+                    },
+                    pickerOptions: {
+                        disabledDate: function(time) {
+                            return time.getTime() > Date.now();
+                        },
+                        shortcuts: [{
+                            text: '今天',
+                            onClick:function(picker) {
+                              picker.$emit('pick', new Date());
+                            }
+                        }, {
+                            text: '昨天',
+                            onClick:function(picker) {
+                              const date = new Date();
+                                date.setTime(date.getTime() - 3600 * 1000 * 24);
+                            picker.$emit('pick', date);
+                        }
+                        }, {
+                            text: '一周前',
+                            onClick:function(picker) {
+                                const date = new Date();
+                                date.setTime(date.getTime() - 3600 * 1000 * 24 * 7);
+                                picker.$emit('pick', date);
+                            }
+                        }]
+                    }
+                };
+            },
+            computed: {
+                sRowHeight: function () {
+                    return this.rowHeight + 'px';
+                },
+                sRowMargin: function () {
+                    return this.rowMargin + 'px';
+                },
+                rowsCount: function () {
+                    return Math.ceil(this.form2.length / 2);
+                }
+            },
+            methods: {
+                handleCheckAllChange: function (val) {
+                    this.checkedCities = val ? cityOptions : [];
+                    this.isIndeterminate = false;
+                },
+                handleCheckedCitiesChange: function (value) {
+                    // console.log(value);
+                    let checkedCount = value.length;
+                    this.checkAll = checkedCount == this.checkedCities.length;
+                    this.isIndeterminate = checkedCount > 0 && checkedCount < this.cities.length;
+                },
+                openDlg: function () {
+                    this.dialogVisible = true;
+                },
+                openDlg2: function () {
+                    this.resetDlg();
+                    this.dialogVisible2 = true;
+                },
+                dialogSure: function () {
+                    console.log(this.form.name,this.form.region);
+                    this.dialogVisible = false;
+                },
+                dialogSure2: function () {
+                    console.log(this.innerForm);
+                    this.dialogVisible2 = false;
+                },
+                resetDlg: function () {
+                    var obj = {};
+                    this.form2.forEach(function (v) {
+                        obj[v.name] = v.defaultValue;
+                    });
+                    this.innerForm = JSON.parse(JSON.stringify(obj));
+                },
+            },
+            mounted: function () {
+                this.resetDlg();
+            }
+        });
+    </script>
+</body>
+</html>

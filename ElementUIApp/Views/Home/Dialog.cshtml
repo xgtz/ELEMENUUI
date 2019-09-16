@@ -1,0 +1,72 @@
+﻿@*@{
+        Layout = null;
+    }*@
+<!doctype html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>ElementUI</title>
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <style>
+        .el-dialog__body {
+            padding-top:10px;
+            padding-bottom:10px;
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <h3>模态框组件</h3>
+        <div>
+            <el-button type="primary" v-on:click="showDlg">打开模态框组件</el-button>
+        </div>
+        <div>
+            <el-dialog title="模态框组件" v-bind:visible.sync="dlgVisible" v-bind:modal="true" width="60%">
+                <grid-myform ref="myform"
+                             v-bind:model="model"
+                             v-bind:row-height="30"
+                             v-bind:rowm-argin="3">
+                </grid-myform>
+                <span slot="footer" class="dialog-footer">
+                    <el-button v-on:click="dlgVisible = false">取 消</el-button>
+                    <el-button type="primary" v-on:click="showDlg">确 定</el-button>
+                </span>
+            </el-dialog>
+        </div>
+    </div>
+    <script src="https://cdn.bootcss.com/require.js/2.3.6/require.min.js"></script>
+    <script src="~/Scripts/main.js"></script>
+
+    <script>
+        require(["vue", "ELEMENT", "axios", "gridform"], function (Vue, element) {
+            Vue.use(element);
+            var app = new Vue({
+                el: '#app',
+                data: function () {
+                    return {
+                        dlgVisible:false,
+                        model: [
+                            { name: 'name', label: '活动名称', type: '1', defaultValue: 'xxx', placeHolder: '', options: [] },
+                            { name: 'region', label: '活动区域', type: '2', defaultValue: '', placeHolder: '请选择活动区域', options: [{ value: '北京', label: '北京' }, { value: '上海', label: '上海' }, { value: '杭州', label: '杭州' }] },
+                            { name: 'data1', label: '活动日期', type: '3', defaultValue: '2019-08-16', placeHolder: '选择日期', options: [] },
+                            { name: 'data2', label: '活动时间', type: '4', defaultValue: '', placeHolder: '选择时间', options: [] },
+                            { name: 'delivery', label: '即时配送', type: '1', defaultValue: '', placeHolder: '', options: [] }
+                        ],
+                    }
+                },
+                methods: {
+                    showDlg: function () {
+                        if(this.$refs.myform) this.$refs.myform.resetDlg();
+                        this.dlgVisible = true;
+                    }
+
+                },
+                mounted: function () {
+
+                }
+
+            });
+        });
+    </script>
+</body>
+</html>

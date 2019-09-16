@@ -1,0 +1,161 @@
+﻿
+<!doctype html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Navbar</title>
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <style type="text/css">
+        
+    </style>
+</head>
+<body>
+    <div id="app">
+        
+        <div>
+            <h3>Navbar</h3>
+            <div>
+                <grid-mymenu ref="myMenu"
+                             v-bind:menu="menu"
+                             v-on:menu-click="handleSelect">
+
+                </grid-mymenu>
+
+                @*<el-menu default-active="activeIndex"
+                         class="el-menu-demo"
+                         mode="horizontal"
+                         v-on:select="handleSelect"
+                         background-color="#545c64"
+                         text-color="#fff"
+                         active-text-color="#ffd04b">
+                   
+                    <el-submenu index="1">
+                        <template slot="title">
+                            处理中心
+                        </template>
+                        <el-menu-item index="1-1">菜单1-1</el-menu-item>
+                        <el-menu-item index="1-2">菜单1-2</el-menu-item>
+                    </el-submenu>
+                    <el-submenu index="2">
+                        <template slot="title">
+                            我的工作台
+                        </template>
+                        <el-menu-item index="2-1">菜单2-1</el-menu-item>
+                        <el-menu-item index="2-2">菜单2-1</el-menu-item>
+                        <el-submenu index="2-4">
+                            <template slot="title">
+                                选项4
+                            </template>
+                            <el-menu-item index="2-4-1">选项1</el-menu-item>
+                            <el-menu-item index="2-4-2">选项2</el-menu-item>
+                            <el-menu-item index="2-4-3">选项3</el-menu-item>
+                        </el-submenu>
+                    </el-submenu>
+                    <el-submenu index="3">
+                        <template slot="title">
+                            订单管理
+                        </template>
+                        <el-menu-item index="3-1"><a href="https://www.ele.me" target="_blank">订单管理</a> </el-menu-item>
+                    </el-submenu>
+                   
+                </el-menu>*@
+
+            </div>
+        </div>
+        <div style="width:100%; height:400px;">
+            <iframe name="mainFrame" id="mainFrame" v-bind:src="iframeUrl" scrolling="auto" frameborder="0" style="width:100%;height:100%;"></iframe>
+        </div>
+    </div>
+    @*<script src="https://unpkg.com/vue/dist/vue.js"></script>
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>*@
+    <script src="https://cdn.bootcss.com/require.js/2.3.6/require.min.js"></script>
+    <script src="~/Scripts/main.js"></script>
+    <script>
+        require(["vue", "ELEMENT", "axios", "gridmenu"], function (Vue, element) {
+            Vue.use(element);
+            var app = new Vue({
+                el: '#app',
+                data: function () {
+                    return {
+                        activeIndex: '1',
+                        iframeUrl: '',
+                        menu: [
+                            {
+                                name: "处理中心",
+                                submenu: [
+                                    {
+                                        name: "菜单1-1"
+                                    },
+                                    {
+                                        name: "菜单1-1"
+                                    }
+                                ]
+                            },
+                            {
+                                name: "我的工作台",
+                                submenu: [
+                                    {
+                                        name: "菜单2-1"
+                                    },
+                                    {
+                                        name: "菜单2-2"
+                                    },
+                                    {
+                                        name: "菜单2-3",
+                                        submenu: [
+                                            {
+                                                name: "菜单2-3-1"
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                name: "测试菜单",
+                                submenu: [
+                                    {
+                                        name: "测试菜单3-1"
+                                    },
+                                    {
+                                        name: "测试菜单3-2"
+                                    },
+                                    {
+                                        name: "测试菜单3-3",
+                                        submenu: [
+                                            {
+                                                name: "菜单3-3-1"
+                                            },
+                                            {
+                                                name: "菜单3-3-2"
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                },
+                methods: {
+                    handleSelect: function (key) {
+                        console.log(key);
+                        if (key == "0-0") {
+                            this.iframeUrl = "http://localhost:8002/Assistant/AduitAnalysis";
+                        }
+                        else if (key == "0-1") {
+                            this.iframeUrl = "https://www.ele.me";
+                        }
+                    }
+                },
+                computed: {
+
+                },
+                mounted: function () {
+
+                }
+
+            });
+        });
+        
+    </script>
+</body>
+</html>

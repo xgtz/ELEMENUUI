@@ -1,0 +1,256 @@
+﻿@*@{
+        Layout = null;
+    }*@
+<!doctype html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>ElementUI</title>
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <link rel="stylesheet" href="https://unpkg.com/v-contextmenu/dist/index.css">
+    <style type="text/css">
+        .el-table .warning-row {
+            background: oldlace;
+        }
+
+        .el-table .success-row {
+            background: #f0f9eb;
+        }
+        
+        .menu {
+		    height: 70px;
+		    width: 100px;
+		    position: absolute;
+		    border-radius: 5px;
+		    border: 1px solid #999999;
+		    background-color: #f4f4f4;
+            z-index:9999;
+        }
+        .menu__item {
+		    display: block;
+		    line-height: 20px;
+		    text-align: left;
+		    margin-top: 10px;
+            margin-left:-28px;
+            width:80px;
+        }
+        li:hover {
+		    background-color: #1790ff;
+		    color: white;
+            border-radius:2px;
+        }
+
+        .el-popover{
+          background: #FFEC8B !important;
+          border-radius: 5px;
+          opacity:0.9
+        }
+
+        [v-cloak]{
+            display: none;
+        }
+
+
+    </style>
+</head>
+<body>
+    <div id="app">
+        <div>
+            <h3>MyTable</h3>
+            <div>
+                <div style="margin-bottom:5px;">
+                    <el-button type="primary" size="mini" v-on:click="saveTableData">保存</el-button>
+                    <el-button type="primary" size="mini" v-on:click="loadTablData">刷新</el-button>
+                </div>
+                <grid-mytable ref="table1"
+                              v-bind:height="300"
+                              v-bind:show-pagination="true"
+                              v-bind:page-size="3"
+                              v-bind:show-checkbox="true"
+                              v-bind:show-index="false"
+                              v-bind:show-popover="true"
+                              v-bind:popover-data="popoverData"
+                              v-bind:show-popover-cols="showPopoverCols"
+                              table-url="/api/User/GetUsers"
+                              v-bind:table-header="tableHeader"
+                              v-bind:table-params="tableParams"
+                              v-on:row-click="rowClick"
+                              v-on:row-contextmenu="rowContextmenu"
+                              v-on:cell-mouse-enter="cellMouseEnter"
+                              v-on:cell-mouse-leave="cellMouseLeave"
+                              loading="loading"></grid-mytable>
+            </div>
+        </div>
+        <hr />
+        <div>
+            <grid-myselect select-url="/api/Select/GetSelectData" select-value="选项3" v-bind:select-params="selectParams">
+            </grid-myselect>
+
+            <grid-myselect v-bind:select-data="selectData" select-value="选项2" >
+            </grid-myselect>
+        </div>
+        <hr />
+        <div>
+            <template>
+                <el-tabs v-model="activeTab" v-on:tab-click="tabHandleClick">
+                    <el-tab-pane label="用户管理" name="first">用户管理</el-tab-pane>
+                    <el-tab-pane label="配置管理" name="second">配置管理</el-tab-pane>
+                    <el-tab-pane label="角色管理" name="third">角色管理</el-tab-pane>
+                </el-tabs>
+            </template>
+        </div>
+
+
+        <div v-show="menuVisible" style="width:130px; margin-left:-100px; " v-cloak>
+            <ul id="menu" class="menu">
+                <li class="menu__item"><span class="el-icon-plus" style="padding-right:2px;"></span>添加</li>
+                <li class="menu__item"><span class="el-icon-close" style="padding-right:2px;"></span>取消</li>
+            </ul>
+        </div>
+
+        @*<template>
+            <v-contextmenu ref="contextmenu">
+                <v-contextmenu-item v-on:click="handleClick">菜单1</v-contextmenu-item>
+                <v-contextmenu-item v-on:click="handleClick">菜单2</v-contextmenu-item>
+                <v-contextmenu-item divider></v-contextmenu-item>
+                <v-contextmenu-item v-on:click="handleClick">菜单3</v-contextmenu-item>
+            </v-contextmenu>
+        </template>*@
+    </div>
+
+    
+
+    <script src="https://cdn.bootcss.com/require.js/2.3.6/require.min.js"></script>
+    <script src="~/Scripts/main.js"></script>
+    <script>
+        require(["vue", "ELEMENT",  "axios", "gridtable", "gridselect"], function (Vue, element) {
+            Vue.use(element);
+          
+            var app = new Vue({
+                el: '#app',
+                data: function () {
+                    return {
+                        tableHeader: [
+                            { prop: 'date', label: '时间', minWidth: '180px', sortable: true },
+                            {
+                                prop: 'name',
+                                label: '姓名',
+                                minWidth: '180px',
+                                inputFortmat: true
+                            },
+                            {
+                                prop: 'province',
+                                label: '省份',
+                                minWidth: '180px',
+                                options: [{ value: '北京', label: '北京' }, { value: '上海', label: '上海' }, { value: '杭州', label: '杭州' }],
+                                selectFormat: true
+                            },
+                            {
+                                prop: 'city',
+                                label: '市区',
+                                txtFormat: function (val) { return "txtFormat" + val; }
+                            },
+                            {
+                                prop: 'oper', label: '编辑', fixed: 'right', minWidth: '140px',
+                                oper: [
+                                    {
+                                        name: '编辑',
+                                        type: 'primary',
+                                        clickFun: function (idx, row) {
+                                            console.log(idx, row);
+                                        }
+                                    }
+                                ]
+                            }
+                        ],
+                        tableParams: [
+                            { key: 'id', value: '1', operater: '=' }
+                        ],
+                        selectParams: [
+                            { key: 'id', value: 'xx', operater: '=' }
+                        ],
+                        selectData: [
+                            { label: '黄金糕', value: '选项1' },
+                            { label: '双皮奶', value: '选项2' },
+                            { label: '水晶饼', value: '选项3' }
+                        ],
+                        activeTab: "first",
+                        menuVisible: false,
+                        popoverData: [
+                            { label: "姓名", name: ["name", "date"] },
+                            { label: "省份", name: ["name", "date"] },
+                            { label: "市区", name: ["name", "date"] }
+                        ],
+                        showPopoverCols: [
+                            "city"
+                        ]
+                    }
+                },
+                methods: {
+                    tabHandleClick: function (tab, event) {
+                        console.log(tab, event);
+                    },
+                    editClick: function (index, row) {
+                        console.log(index, row);
+                    },
+                    rowClick: function (row) {
+                        if (row.index == 0) {
+                            this.activeTab = "first";
+                        } else if (row.index == 1) {
+                            this.activeTab = "second";
+                        } else {
+                            this.activeTab = "third";
+                        }
+                    },
+                    rowContextmenu: function (row) {
+                        //console.log('rowContextmenu');
+                        //var postition = {
+                        //    top: event.clientY - 10,
+                        //    left: event.clientX + 1,
+                        //}
+                        //this.$refs.contextmenu.show(postition)
+
+                        console.log(row);
+                        this.menuVisible = false;
+                        this.menuVisible = true;
+                        var menu = document.querySelector('#menu');
+                        menu.style.left = event.clientX + 5 + 'px';
+                        document.addEventListener('click', this.foo);
+                        menu.style.top = event.clientY - 10 + 'px'
+                    },
+                    cellMouseEnter: function (row, column, cell) {
+                        //console.log("cellMouseEnter",row, column, cell);
+                        //console.log("cellMouseEnter", column.property,column.label);
+                    },
+                    cellMouseLeave: function (row, column, cell) {
+                        //console.log("cellMouseLeave",row, column, cell);
+                    },
+                    handleClick: function (vm, event) {
+                        console.log(vm.$slots.default[0].text + '被点击了!');
+                    },
+                    foo: function () {
+                        this.menuVisible = false;
+                        document.removeEventListener('click', this.foo);
+                    },
+                    selectionChange: function (selection) {
+                        console.log(selection);
+                    },
+                    saveTableData: function () {
+                        this.$refs.table1.tableData.forEach(function (v) {
+                            console.log(v.province, v.name);
+                        });
+                    },
+                    loadTablData: function () {
+                        this.$refs.table1.reloadData();
+                    },
+
+                },
+                mounted: function () {
+
+                }
+
+            });
+        });
+    </script>
+</body>
+</html>

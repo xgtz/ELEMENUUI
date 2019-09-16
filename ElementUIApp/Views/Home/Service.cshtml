@@ -1,0 +1,140 @@
+﻿
+<!doctype html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>ElementUI</title>
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <style>
+        .el-dialog__body {
+            padding-top: 10px;
+            padding-bottom: 10px;
+        }
+        [v-cloak] 
+        { 
+            display: none 
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <h3>模态框组件</h3>
+        <div>
+            <el-button type="primary" v-on:click="AjaxGetToken">Ajax获取Token</el-button>
+            <el-button type="primary" v-on:click="AxiosGetToken">Axios获取Token</el-button>
+            
+        </div>
+        <div style="margin-top:20px;">
+            <el-button type="primary" v-on:click="AjaxGetPruduct">Ajax调用服务</el-button>
+            <el-button type="primary" v-on:click="AxiosGetPruduct">Axios调用服务</el-button>
+        </div>
+        <div v-cloak style="width:100%; height:100px; padding:20px; border:1px solid #ccc; margin-top:20px;">
+            {{ Result }}
+
+        </div>
+
+    </div>
+    <script src="https://cdn.bootcss.com/require.js/2.3.6/require.min.js"></script>
+    <script src="~/Scripts/main.js"></script>
+
+    <script>
+        require(["jquery", "vue", "ELEMENT", "axios"], function ($, Vue, element, axios) {
+            Vue.use(element);
+            var app = new Vue({
+                el: '#app',
+                data: function () {
+                    return {
+                        StaffId: 'A09',
+                        Result: "",
+                        TimeStamp: "20190826160101",
+                        SignToken:"",
+                        NOnce:"1",
+                        TokenWebApi: "http://192.168.2.42:7016/api/Service/GetToken",
+                        GetUrl: "http://192.168.2.42:7016/api/Product/GetProduct",
+                        PostUrl: "http://192.168.2.42:7016/api/Product/AddProduct"
+                    }
+                },
+                methods: {
+                    AjaxGetToken: function () {
+                        var _this = this;
+                        $.ajax({
+                            url: _this.TokenWebApi + "?staffId=" + _this.StaffId,
+                            type: "GET",
+                            beforeSend: function (xhr) {
+                                xhr.setRequestHeader("staffid", _this.StaffId);
+                                xhr.setRequestHeader("timestamp", _this.TimeStamp);
+                                xhr.setRequestHeader("nonce", _this.NOnce);
+                            },
+                            dataType: 'json',
+                            success: function (result) {
+                                _this.Result = result.data.signToken;
+                                _this.SignToken = result.data.signToken;
+                            },
+                            error: function (err) {
+                                console.log(err);
+                            }
+                            
+                        });
+                    },
+                    AxiosGetToken: function () {
+                        var _this = this;
+                        axios.get(_this.TokenWebApi , {
+                            params: { staffId: _this.StaffId },
+                            headers: {
+                                staffid: _this.StaffId,
+                                timestamp: _this.TimeStamp,
+                                nonce: _this.NOnce
+                            }
+                        })
+                        .then(function (result) {
+                            if (result.data.statusCode == "200") {
+                                _this.Result = result.data.data.signToken;
+                                _this.SignToken = result.data.data.signToken;
+                            } else {
+                                _this.Result = result.data.info;
+                            }
+                            
+                        })
+                        .catch(function (error) {
+                              console.log(error);
+                        });
+                    },
+                    AjaxGetPruduct: function ()
+                    {
+                        var _this = this;
+                        var params = {
+                            method: "GET",
+                            timestamp: _this.TimeStamp,
+                            nonce: _this.NOnce,
+                            staffid: _this.StaffId,
+                            signtoken: _this.SignToken,
+                            items: [
+                                { key: "id", value: "1" },
+                                { key: "name", value: "wahaha" },
+                            ]
+                        };
+                        $.ajax({
+                            type: "Post",
+                            url: "/api/Serve/GetProduct",
+                            dataType: 'json',
+                            data: params,
+                            success: function (result) {
+                                _this.Result = result;
+                                console.log(result);
+                            }
+                        });
+                    },
+                    AxiosGetPruduct: function () {
+
+                    }
+
+                },
+                mounted: function () {
+
+                }
+
+            });
+        });
+    </script>
+</body>
+</html>
